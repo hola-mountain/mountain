@@ -31,6 +31,11 @@ dependencies {
 	implementation 'io.r2dbc:r2dbc-h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
+
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-webflux-ui
+	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.9'
+	implementation 'org.springdoc:springdoc-openapi-webflux-core:1.5.9'
+
 }
 
 
