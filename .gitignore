@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 src/main/java/com/example/mountain/config/DataSourceR2DBCConfig.java
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
