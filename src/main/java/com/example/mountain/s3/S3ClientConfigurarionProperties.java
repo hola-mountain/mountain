@@ -1,25 +1,10 @@
 package com.example.mountain.s3;
 
-
-import java.net.URI;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
 import software.amazon.awssdk.regions.Region;
-
-//cloud:
-//    aws:
-//        credentials :
-//            accessKey : AKIA4JLK22UMGNRY5U7T
-//            secretKey : 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
-    //    stack:
-    //        auto: false
-    //    s3:
-    //      bucket: holamountain
-    //    region:
-    //        static: ap-northeast-2
 
 
 @ConfigurationProperties
