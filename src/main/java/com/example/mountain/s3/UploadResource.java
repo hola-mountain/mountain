@@ -1,14 +1,14 @@
 package com.example.mountain.s3;
 
+import com.example.mountain.entity.MountainThumbEntity;
+import com.example.mountain.repository.MountainThumbRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.SdkResponse;
@@ -34,15 +34,14 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@RequiredArgsConstructor
 public class UploadResource {
 
+    private final S3ClientConfigurarionProperties s3Property;
     private final S3AsyncClient s3client;
     private final S3ClientConfigurarionProperties s3config;
+    private final MountainThumbRepository mountainThumbRepository;
 
-    public UploadResource(S3AsyncClient s3client, S3ClientConfigurarionProperties s3config) {
-        this.s3client = s3client;
-        this.s3config = s3config;
-    }
 
     private final Path basePath = Paths.get("./src/main/resources/upload/");
 
@@ -51,16 +50,15 @@ public class UploadResource {
      *  /src/main/resources/upload/{fp.filename()} 으로
      *  File을 생성한다.
      */
-    @PostMapping("/upload")
-    public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono) {
+    @PostMapping("/upload/{mountainId}")
+    public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono, @PathVariable Long mountainId) {
+
 
         filePartMono.flatMap(
                  fp -> fp.transferTo(basePath.resolve(fp.filename())))
                 .subscribe();
 
-         filePartMono.doOnNext(fp-> uploadFiletoS3(fp.filename()))
-                 .doOnNext(filePart -> filePart.delete());
-        return null;
+        return filePartMono.flatMap(fp-> uploadFiletoS3(fp.filename(), mountainId)).retry();
     }
 
 
@@ -68,13 +66,12 @@ public class UploadResource {
      *  /src/main/resources/upload/ 에서 fileName으로 파일을 찾은 뒤
      *  파일을 Amazon S3에 올린다.
      */
-    public Mono<ResponseEntity<UploadResult>> uploadFiletoS3(String fileName) {
+    public Mono<ResponseEntity<UploadResult>> uploadFiletoS3(String fileName, Long mountainId) {
 
-        String fileKey = UUID.randomUUID().toString();
+        String fileKey = UUID.randomUUID().toString()+".jpg";
         Map<String, String> metadata = new HashMap<String, String>();
 
         //mediaType = MediaType.IMAGE_JPEG;
-        System.out.println(fileName);
         File fi = new File("./src/main/resources/upload/"+ fileName);
         byte[] fileContent = null;
         try {
@@ -83,15 +80,17 @@ public class UploadResource {
             e.printStackTrace();
             return null;
         }
-
+        String buckDomain = s3Property.getEndpoint() + s3Property.getBucket() + "/";
+        MountainThumbEntity mountainThumbEntity = new MountainThumbEntity(buckDomain+fileKey, mountainId);
+        mountainThumbRepository.save(mountainThumbEntity).subscribe();
 
         //log.info("[I95] uploadHandler: mediaType{}, length={}", mediaType, length);
         CompletableFuture<PutObjectResponse> future = s3client
                 .putObject(PutObjectRequest.builder()
                                 .bucket(s3config.getBucket())
                                 .contentLength(Long.valueOf(fileContent.length))
-                                .key(fileKey.toString()+".jpg")
-                                .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                                .key(fileKey)
+                                .contentType(MediaType.IMAGE_JPEG_VALUE)
                                 .metadata(metadata)
                                 .build(),
                         AsyncRequestBody.fromPublisher(Flux.just(ByteBuffer.wrap(fileContent))));

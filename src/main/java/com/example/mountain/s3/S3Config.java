@@ -50,7 +50,7 @@ public class S3Config {
                 .credentialsProvider(credentialsProvider)
                 .serviceConfiguration(serviceConfiguration);
 
-        b = b.endpointOverride(new URI("https://hola-mountain.s3.ap-northeast-2.amazonaws.com/"));
+        b = b.endpointOverride(new URI(properties.getEndpoint()));
 
         return b.build();
     }

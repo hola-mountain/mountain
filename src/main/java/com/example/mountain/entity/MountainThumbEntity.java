@@ -24,8 +24,11 @@ public class MountainThumbEntity {
     private String image;
     private Long mountainId;
 
-    @Transient
-    private MountainEntity mountainEntity;
+    public MountainThumbEntity() {
+    }
 
-
+    public MountainThumbEntity(String image, Long mountainId) {
+        this.image = image;
+        this.mountainId = mountainId;
+    }
 }

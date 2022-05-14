@@ -23,6 +23,9 @@ public class S3ClientConfigurarionProperties {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.s3.endpoint}")
+    private String endpoint;
+
     // AWS S3 requires that file parts must have at least 5MB, except
     // for the last part. This may change for other S3-compatible services, so let't
     // define a configuration property for that
