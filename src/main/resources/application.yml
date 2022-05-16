@@ -1,5 +1,18 @@
+spring:
+  application:
+    name: mountain-service
+  r2dbc:
+    url: r2dbc:mysql://15.164.98.73:3306/holamountain?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    username: minjunkang
+    password: alswnsrkdA1$
+  http:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
 server:
   port: 5000
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.value}
@@ -8,30 +21,6 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://52.78.34.107:8761/eureka/
-
-spring:
-  application:
-    name: mountain-service
-  http:
-    multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
-  r2dbc:
-    url: r2dbc:mysql://15.164.98.73:3306/holamountain?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
-    username: minjunkang
-    password: alswnsrkdA1$
-
-  jpa:
-    show-sql: true
-    generate-ddl: false
-    database: mysql
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL57Dialect
-        format_sql: true
-
 
 logging:
   level:
