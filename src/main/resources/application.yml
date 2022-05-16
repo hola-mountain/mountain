@@ -10,6 +10,8 @@ eureka:
       defaultZone: http://52.78.34.107:8761/eureka/
 
 spring:
+  application:
+    name: mountain-service
   http:
     multipart:
       max-file-size: 5MB
