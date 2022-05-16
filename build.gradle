@@ -38,8 +38,8 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 
 	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-webflux-ui
-	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.9'
-	implementation 'org.springdoc:springdoc-openapi-webflux-core:1.5.9'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-webflux-ui', version: '1.6.8'
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-webflux-core', version: '1.6.8'
 
 //   implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
 //   implementation 'com.amazonaws:aws-java-sdk-s3'
@@ -49,7 +49,6 @@ dependencies {
 	implementation("software.amazon.awssdk:netty-nio-client") //
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
-   implementation 'org.springframework.boot:spring-boot-starter-web'
 
 
 }
