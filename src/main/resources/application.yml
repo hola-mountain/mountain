@@ -1,0 +1,50 @@
+server:
+  port: 5000
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://52.78.34.107:8761/eureka/
+
+spring:
+  http:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  r2dbc:
+    url: r2dbc:mysql://15.164.98.73:3306/holamountain?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Seoul
+    username: minjunkang
+    password: alswnsrkdA1$
+
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    database: mysql
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        format_sql: true
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.r2dbc: DEBUG
+
+cloud:
+  aws:
+    credentials :
+      accesskey : AKIA4JLK22UMDJTBIAA3
+      secretkey : 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
+    stack:
+      auto: false
+    s3:
+      bucket: hola-mountain
+      endpoint: https://hola-mountain.s3.ap-northeast-2.amazonaws.com/
+    region:
+      static: ap-northeast-2
