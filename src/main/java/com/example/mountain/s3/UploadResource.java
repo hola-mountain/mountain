@@ -37,7 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/mountain/api")
 @Slf4j
 @RequiredArgsConstructor
 public class UploadResource {
