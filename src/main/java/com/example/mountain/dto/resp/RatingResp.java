@@ -3,7 +3,6 @@ package com.example.mountain.dto.resp;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class RatingResp {
@@ -12,7 +11,6 @@ public class RatingResp {
     private Integer star;
     private String comment;
     private Long userId;
-    private String username;
     private String title;
     private String thumbImg;
     private Long recommendNum;

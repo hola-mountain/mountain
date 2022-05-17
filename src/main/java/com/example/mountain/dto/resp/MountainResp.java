@@ -19,7 +19,6 @@ public class MountainResp {
     private Integer attractLevel;
     private String description;
     private ArrayList<String> image = new ArrayList<>();
-    private String img;
 
     public MountainResp() {
     }
