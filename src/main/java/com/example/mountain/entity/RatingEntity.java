@@ -46,4 +46,7 @@ public class RatingEntity {
     @Column(value="rating_num")
     private Long ratingNum;
 
+    public void setThumbImg(String thumbImg) {
+        this.thumbImg = thumbImg;
+    }
 }

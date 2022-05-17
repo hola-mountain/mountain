@@ -1,7 +1,9 @@
 package com.example.mountain.s3;
 
 import com.example.mountain.entity.MountainThumbEntity;
+import com.example.mountain.entity.RatingEntity;
 import com.example.mountain.repository.MountainThumbRepository;
+import com.example.mountain.repository.RatingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,7 +42,7 @@ public class UploadResource {
     private final S3ClientConfigurarionProperties s3Property;
     private final S3AsyncClient s3client;
     private final S3ClientConfigurarionProperties s3config;
-    private final MountainThumbRepository mountainThumbRepository;
+    private final RatingRepository ratingRepository;
 
 
     private final Path basePath = Paths.get("./src/main/resources/upload/");
@@ -50,15 +52,15 @@ public class UploadResource {
      *  /src/main/resources/upload/{fp.filename()} 으로
      *  File을 생성한다.
      */
-    @PostMapping("/upload/{mountainId}")
-    public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono, @PathVariable Long mountainId) {
+    @PostMapping("/upload/{ratingId}")
+    public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono, @PathVariable Long ratingId) {
 
 
         filePartMono.flatMap(
                  fp -> fp.transferTo(basePath.resolve(fp.filename())))
                 .subscribe();
 
-        return filePartMono.flatMap(fp-> uploadFiletoS3(fp.filename(), mountainId)).retry();
+        return filePartMono.flatMap(fp-> uploadFiletoS3(fp.filename(), ratingId)).retry();
     }
 
 
@@ -66,7 +68,7 @@ public class UploadResource {
      *  /src/main/resources/upload/ 에서 fileName으로 파일을 찾은 뒤
      *  파일을 Amazon S3에 올린다.
      */
-    public Mono<ResponseEntity<UploadResult>> uploadFiletoS3(String fileName, Long mountainId) {
+    public Mono<ResponseEntity<UploadResult>> uploadFiletoS3(String fileName, Long ratingId) {
 
         String fileKey = UUID.randomUUID().toString()+".jpg";
         Map<String, String> metadata = new HashMap<String, String>();
@@ -81,8 +83,11 @@ public class UploadResource {
             return null;
         }
         String buckDomain = s3Property.getEndpoint() + s3Property.getBucket() + "/";
-        MountainThumbEntity mountainThumbEntity = new MountainThumbEntity(buckDomain+fileKey, mountainId);
-        mountainThumbRepository.save(mountainThumbEntity).subscribe();
+        String img = buckDomain+fileKey;
+        ratingRepository.findById(ratingId).flatMap( x-> {
+            x.setThumbImg(img);
+            return ratingRepository.save(x);
+        }).subscribe();
 
         //log.info("[I95] uploadHandler: mediaType{}, length={}", mediaType, length);
         CompletableFuture<PutObjectResponse> future = s3client
