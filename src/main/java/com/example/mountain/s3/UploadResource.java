@@ -48,7 +48,7 @@ public class UploadResource {
     private final RatingRepository ratingRepository;
 
 
-    private final Path basePath = Paths.get("./src/main/resources/upload/");
+    private final Path basePath = Paths.get("/home/ec2-user/upload");
 
     /**
      *  filePartMono로 받아
@@ -68,7 +68,7 @@ public class UploadResource {
     @PostMapping("/upload/{ratingId}")
     public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono, @PathVariable Long ratingId) {
 
-
+        log.info("/upload/{}, ", ratingId);
         filePartMono.flatMap(
                  fp -> fp.transferTo(basePath.resolve(fp.filename())))
                 .subscribe();
@@ -85,9 +85,9 @@ public class UploadResource {
 
         String fileKey = UUID.randomUUID().toString()+".jpg";
         Map<String, String> metadata = new HashMap<String, String>();
-
+        log.info("file dir : {}" ,"./" + fileName);
         //mediaType = MediaType.IMAGE_JPEG;
-        File fi = new File("./"+ fileName);
+        File fi = new File("/home/ec2-user/upload/"+ fileName);
         byte[] fileContent = null;
         try {
             fileContent = Files.readAllBytes(fi.toPath());
