@@ -48,7 +48,7 @@ public class UploadResource {
     private final RatingRepository ratingRepository;
 
 
-    private final Path basePath = Paths.get("/home/ec2-user/upload");
+    private final Path basePath = Paths.get("/home/ec2-user/upload/");
 
     /**
      *  filePartMono로 받아
