@@ -1,11 +1,18 @@
 package com.example.mountain.s3;
 
-import com.example.mountain.entity.MountainThumbEntity;
-import com.example.mountain.entity.RatingEntity;
-import com.example.mountain.repository.MountainThumbRepository;
+import com.example.mountain.dto.resp.MountainResp;
+import com.example.mountain.handler.MountainHandler;
 import com.example.mountain.repository.RatingRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.RouterOperation;
+import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,10 +36,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * @author Philippe
- *
- */
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -52,6 +55,16 @@ public class UploadResource {
      *  /src/main/resources/upload/{fp.filename()} 으로
      *  File을 생성한다.
      */
+    @RouterOperations(
+            @RouterOperation(path = "/api/upload/{ratingId}"
+                    , produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST,
+                    operation = @Operation(operationId = "uploadImage", responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
+                            @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
+                            @ApiResponse(responseCode = "404", description = "Employee not found")},
+                            parameters = {@Parameter(in = ParameterIn.PATH, name = "ratingId")}
+                    )
+            ))
     @PostMapping("/upload/{ratingId}")
     public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono, @PathVariable Long ratingId) {
 
@@ -74,7 +87,7 @@ public class UploadResource {
         Map<String, String> metadata = new HashMap<String, String>();
 
         //mediaType = MediaType.IMAGE_JPEG;
-        File fi = new File("./src/main/resources/upload/"+ fileName);
+        File fi = new File("/home/ec2-user/upload"+ fileName);
         byte[] fileContent = null;
         try {
             fileContent = Files.readAllBytes(fi.toPath());
