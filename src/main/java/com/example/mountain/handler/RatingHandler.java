@@ -96,7 +96,7 @@ public class RatingHandler {
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just("ok"), String.class)
+                .body(ratingMono, RatingEntity.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 
