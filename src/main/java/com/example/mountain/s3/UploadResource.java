@@ -87,7 +87,7 @@ public class UploadResource {
         Map<String, String> metadata = new HashMap<String, String>();
 
         //mediaType = MediaType.IMAGE_JPEG;
-        File fi = new File("/home/ec2-user/upload"+ fileName);
+        File fi = new File("/home/ec2-user/upload/"+ fileName);
         byte[] fileContent = null;
         try {
             fileContent = Files.readAllBytes(fi.toPath());
