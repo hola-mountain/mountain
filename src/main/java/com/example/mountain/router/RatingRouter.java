@@ -25,7 +25,7 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
-
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 @Configuration
 @EnableWebFlux
 public class RatingRouter {
@@ -91,7 +91,7 @@ public class RatingRouter {
          return
                 RouterFunctions.route()
                         .GET("/mountain/{mountainId}/review", ratingHandler::getReviewInMountainDetail)
-                        .POST("/mountain/{mountainId}/review", ratingHandler::createReview)
+                        .POST("/mountain/{mountainId}/review",accept(MediaType.APPLICATION_FORM_URLENCODED), ratingHandler::createReview)
                         .PUT("/mountain/{mountainId}/review/{ratingId}", ratingHandler::modifyReview)
                         .DELETE("/mountain/{mountainId}/review/{ratingId}", ratingHandler::removeReview)
                         .PATCH("/mountain/{mountainId}/review/{ratingId}/recommend", ratingHandler::recommendReview)

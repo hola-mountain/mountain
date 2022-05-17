@@ -13,7 +13,6 @@ import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -32,15 +31,7 @@ public class MountainRouter {
                     operation = @Operation(operationId = "getMountainList", responses = {
                             @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
                             @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
-                            @ApiResponse(responseCode = "404", description = "Employee not found")}
-                            )
-            ),
-            @RouterOperation(path = "/mountain/{mountainId}", produces = {
-                    MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = MountainHandler.class, beanMethod = "getMountainDetail",
-                    operation = @Operation(operationId = "getMountainDetail", responses = {
-                            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
-                            @ApiResponse(responseCode = "400", description = "Invalid Employee details supplied")}, parameters = {
-
+                            @ApiResponse(responseCode = "404", description = "Employee not found")}, parameters = {
                             @Parameter(name = "pageNum", description = "페이지 번호",
                                     in = ParameterIn.QUERY, schema = @Schema(type = "string")),
                             @Parameter(name = "pageSize", description = "보여지는 페이지 수",
@@ -51,8 +42,14 @@ public class MountainRouter {
                                     in = ParameterIn.QUERY, schema = @Schema(type = "string")),
                             @Parameter(name = "sort", description = "sort specification",
                                     in = ParameterIn.QUERY, schema = @Schema(type = "string")),
-
                             @Parameter(in = ParameterIn.PATH, name = "mountainId")}
+                            )
+            ),
+            @RouterOperation(path = "/mountain/{mountainId}", produces = {
+                    MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = MountainHandler.class, beanMethod = "getMountainDetail",
+                    operation = @Operation(operationId = "getMountainDetail", responses = {
+                            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
+                            @ApiResponse(responseCode = "400", description = "Invalid Employee details supplied")}
                     )),
 
     })
