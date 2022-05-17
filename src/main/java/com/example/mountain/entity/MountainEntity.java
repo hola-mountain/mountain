@@ -60,4 +60,7 @@ public class MountainEntity {
 
     @Transient
     private List<MountainThumbEntity> mountainThumbEntityList = new ArrayList<>();
+
+    @Transient
+    private String image;
 }

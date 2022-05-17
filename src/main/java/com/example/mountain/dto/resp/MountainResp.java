@@ -20,7 +20,8 @@ public class MountainResp {
     private Integer viewLevel;
     private Integer attractLevel;
     private String description;
-    private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<String> image = new ArrayList<>();
+    private String img;
 
     public MountainResp() {
     }
@@ -31,7 +32,14 @@ public class MountainResp {
         this.shortDescription = shortDescription;
     }
 
-    public MountainResp(Long mountainId, String name, Double latitude, Double longitude, Integer height, Integer hikingLevel, Integer viewLevel, Integer attractLevel, String description, ArrayList<String> images) {
+    public MountainResp(Long mountainId, String name, String shortDescription, ArrayList<String> image) {
+        this.mountainId = mountainId;
+        this.name = name;
+        this.shortDescription = shortDescription;
+        this.image = image;
+    }
+
+    public MountainResp(Long mountainId, String name, Double latitude, Double longitude, Integer height, Integer hikingLevel, Integer viewLevel, Integer attractLevel, String description, ArrayList<String> image) {
         this.mountainId = mountainId;
         this.name = name;
         this.latitude = latitude;
@@ -41,6 +49,6 @@ public class MountainResp {
         this.viewLevel = viewLevel;
         this.attractLevel = attractLevel;
         this.description = description;
-        this.images = images;
+        this.image = image;
     }
 }
