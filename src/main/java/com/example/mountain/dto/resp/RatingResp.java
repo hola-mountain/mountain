@@ -1,15 +1,11 @@
 package com.example.mountain.dto.resp;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.relational.core.mapping.Column;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RatingResp {
 
     private Long ratingId;

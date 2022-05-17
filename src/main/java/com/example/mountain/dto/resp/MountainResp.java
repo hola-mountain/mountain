@@ -1,12 +1,10 @@
 package com.example.mountain.dto.resp;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.ArrayList;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MountainResp {
 
     private Long mountainId;
