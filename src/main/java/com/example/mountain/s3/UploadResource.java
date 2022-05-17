@@ -48,6 +48,7 @@ public class UploadResource {
     private final RatingRepository ratingRepository;
 
 
+    //private final Path basePath = Paths.get("/home/ec2-user/upload/");
     private final Path basePath = Paths.get("/home/ec2-user/upload/");
 
     /**
@@ -55,16 +56,6 @@ public class UploadResource {
      *  /src/main/resources/upload/{fp.filename()} 으로
      *  File을 생성한다.
      */
-    @RouterOperations(
-            @RouterOperation(path = "/api/upload/{ratingId}"
-                    , produces = {MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.POST,
-                    operation = @Operation(operationId = "uploadImage", responses = {
-                            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
-                            @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
-                            @ApiResponse(responseCode = "404", description = "Employee not found")},
-                            parameters = {@Parameter(in = ParameterIn.PATH, name = "ratingId")}
-                    )
-            ))
     @PostMapping("/upload/{ratingId}")
     public Mono<ResponseEntity<UploadResult>> uploadHandler(@RequestPart("file") Mono<FilePart> filePartMono, @PathVariable Long ratingId) {
 
