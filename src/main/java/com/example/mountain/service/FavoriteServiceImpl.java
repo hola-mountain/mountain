@@ -43,7 +43,6 @@ public class FavoriteServiceImpl implements FavoriteService{
                     Mono.zip(Mono.just(y), mountainThumbRepository.findByMountainId(y.getId()).collectList(), Mono.just(x)))
                         .map(t -> {
                 ArrayList<String> i = new ArrayList();
-                ArrayList<Long> favorites = new ArrayList<>();
                 t.getT2().forEach(img-> i.add(img.getImage()));
                 return new FavoriteMountainResp(t.getT1().getId(), t.getT1().getName(), t.getT1().getShortDescription(), i, x.getId(), x.getRegdate().toLocalDate());
                 })).log();
