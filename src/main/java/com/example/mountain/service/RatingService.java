@@ -16,7 +16,7 @@ public interface RatingService {
 
     public Mono<RatingEntity> updateRating(RatingRequest ratingRequest, Long ratingId);
 
-    public Mono<Void> deleteRating(Long id);
+    public Mono<Void> deleteRating(Long id, Long userId);
 
     Mono<Integer> toggleRecommend(Long ratingId, Long userId, Integer add);
 

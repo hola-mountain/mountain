@@ -1,5 +1,6 @@
 package com.example.mountain.service;
 
+import com.example.mountain.dto.kakfa.ReviewCount;
 import com.example.mountain.dto.req.RatingRequest;
 import com.example.mountain.dto.resp.FavoriteMountainResp;
 import com.example.mountain.dto.resp.RatingMountainResp;
@@ -11,9 +12,12 @@ import com.example.mountain.repository.MountainRepository;
 import com.example.mountain.repository.RatingRecRepository;
 import com.example.mountain.repository.RatingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -25,11 +29,21 @@ import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final RatingRecRepository ratingRecRepository;
     private final MountainRepository mountainRepository;
+    private final KafkaTemplate<String, ReviewCount> ratingKafkaTemplate;
+
+    private static final String TOPIC = "test";
+
+    public void sendMessage(ReviewCount message) {
+        log.info(String.format("#### -> Producing message -> %s", message.toString()));
+        this.ratingKafkaTemplate.send(TOPIC ,message);
+    }
+
 
     @Override
     public Flux<RatingResp> getRatingListPage(Long mountainId, int pageNum, int pageSize) {
@@ -52,7 +66,15 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Mono<RatingEntity> createRating(RatingEntity ratingEntity) {
-        return ratingRepository.save(ratingEntity);
+
+        Mono<RatingEntity> mono = ratingRepository.save(ratingEntity);
+        mono.doOnNext(x->
+           sendMessage(ReviewCount.builder()
+                   .userId(x.getUserId())
+                   .ratingId(x.getId())
+                   .add(1)
+                   .build()));
+        return mono;
     }
 
     @Override
@@ -76,8 +98,13 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public Mono<Void> deleteRating(Long id) {
-        return ratingRepository.deleteById(id);
+    public Mono<Void> deleteRating(Long id, Long userId) {
+        return ratingRepository.deleteById(id)
+                .doOnNext(x-> sendMessage(ReviewCount.builder()
+                                                    .userId(userId)
+                                                    .ratingId(id)
+                                                    .add(-1)
+                                                    .build()));
     }
 
     @Transactional

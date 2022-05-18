@@ -125,10 +125,14 @@ public class RatingHandler {
 
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
         Long ratingId = Long.parseLong(serverRequest.pathVariable("ratingId"));
+        Mono<RatingRequest> req = serverRequest.bodyToMono(RatingRequest.class);
+        Mono<Void> result = Mono.zip(req, Mono.just(ratingId)).flatMap(
+                x-> ratingService.deleteRating(x.getT2().longValue(), x.getT1().getUserId())
+        );
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(ratingService.deleteRating(ratingId), RatingResp.class)
+                .body(ratingId, String.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 
