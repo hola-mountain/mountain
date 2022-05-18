@@ -45,29 +45,13 @@ public class MountainRouter {
                             }
                             )
             ),
-            @RouterOperation(path = "/mountain/all"
-                    , produces = {
-                    MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = MountainHandler.class, beanMethod = "getMountainAll",
-                    operation = @Operation(operationId = "getMountainAll", responses = {
-                            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
-                            @ApiResponse(responseCode = "400", description = "Invalid Employee ID supplied"),
-                            @ApiResponse(responseCode = "404", description = "Employee not found")}, parameters = {
-                            @Parameter(name = "pageNum", description = "페이지 번호",
-                                    in = ParameterIn.QUERY, schema = @Schema(type = "string")),
-                            @Parameter(name = "pageSize", description = "보여지는 페이지 수",
-                                    in = ParameterIn.QUERY, schema = @Schema(type = "string")),
-                            @Parameter(name = "isAsc", description = "정렬 방향",
-                                    in = ParameterIn.QUERY, schema = @Schema(type = "string")),
-                            @Parameter(name = "sort", description = "sort specification",
-                                    in = ParameterIn.QUERY, schema = @Schema(type = "string"))
-                            }
-                    )
-            ),
             @RouterOperation(path = "/mountain/{mountainId}", produces = {
                     MediaType.APPLICATION_JSON_VALUE}, method = RequestMethod.GET, beanClass = MountainHandler.class, beanMethod = "getMountainDetail",
                     operation = @Operation(operationId = "getMountainDetail", responses = {
                             @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = MountainResp.class))),
-                            @ApiResponse(responseCode = "400", description = "Invalid Employee details supplied")}
+                            @ApiResponse(responseCode = "400", description = "Invalid Employee details supplied")}, parameters = {
+                            @Parameter(in = ParameterIn.PATH, name = "mountainId")
+                    }
                     )),
 
     })
@@ -75,7 +59,6 @@ public class MountainRouter {
         return
                 RouterFunctions.route()
                                 .GET("/mountain", mountainHandler::getMountainList)
-                                .GET("/mountain/all", mountainHandler::getMountainAll)
                                 .GET("/mountain/{mountainId}", mountainHandler::getMountainDetail)
                                 .build();
     }
