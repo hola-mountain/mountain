@@ -6,7 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface MountainService {
     Flux<MountainResp> getMountainListPage(int district, int pageNum, int pageSize, String sortBy, boolean isAsc, String search);
-    Flux<MountainResp> getMountainListPage(int pageNum, int pageSize, String sortBy, boolean isAsc);
-
     Mono<MountainResp> getMountainDetail(Long mountainId);
 }
