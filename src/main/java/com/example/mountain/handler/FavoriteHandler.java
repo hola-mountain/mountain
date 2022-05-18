@@ -2,6 +2,7 @@ package com.example.mountain.handler;
 
 import com.example.mountain.dto.req.FavoriteReq;
 import com.example.mountain.dto.req.RatingRecommendReq;
+import com.example.mountain.dto.resp.FavoriteMountainResp;
 import com.example.mountain.dto.resp.RatingResp;
 import com.example.mountain.entity.FavoriteEntity;
 import com.example.mountain.service.FavoriteService;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -40,6 +42,16 @@ public class FavoriteHandler {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(favoriteEntityMono, FavoriteEntity.class)
+                .onErrorResume(error -> ServerResponse.badRequest().build());
+    }
+
+    public Mono<ServerResponse> getMyPageFavorite(ServerRequest serverRequest){
+        Long userId= Long.parseLong(serverRequest.queryParam("userId").get());
+
+        Flux<FavoriteMountainResp> result = favoriteService.getMyPageFavoriteMountain(userId);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result, FavoriteMountainResp.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 }
