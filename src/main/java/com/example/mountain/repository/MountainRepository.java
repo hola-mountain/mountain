@@ -17,8 +17,6 @@ public interface MountainRepository extends ReactiveSortingRepository<MountainEn
     //@Query(value = "SELECT id, name, short_description FROM MOUNTAINS  WHERE district_id =:district AND name LIKE :name")
     Flux<MountainEntity> findByDistrictIdAndNameLike(int district, String name, Pageable pageable);
 
-    Flux<MountainEntity> findByDistrictId(int district, Pageable pageable);
-
-    Flux<MountainEntity> findAllBy(@NonNull Pageable pageable);
+    Flux<MountainEntity> findByNameLike(String name, @NonNull Pageable pageable);
 }
 
