@@ -1,9 +1,13 @@
 package com.example.mountain.service;
 
 import com.example.mountain.dto.req.RatingRequest;
+import com.example.mountain.dto.resp.FavoriteMountainResp;
+import com.example.mountain.dto.resp.RatingMountainResp;
 import com.example.mountain.dto.resp.RatingResp;
+import com.example.mountain.entity.FavoriteEntity;
 import com.example.mountain.entity.RatingEntity;
 import com.example.mountain.entity.RatingRecEntity;
+import com.example.mountain.repository.MountainRepository;
 import com.example.mountain.repository.RatingRecRepository;
 import com.example.mountain.repository.RatingRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
@@ -24,13 +29,14 @@ public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final RatingRecRepository ratingRecRepository;
+    private final MountainRepository mountainRepository;
 
     @Override
     public Flux<RatingResp> getRatingListPage(Long mountainId, int pageNum, int pageSize) {
 
         ArrayList<RatingResp> ratingResps = new ArrayList<>();
         Sort.Direction direction = Sort.Direction.DESC;
-        Sort sort = Sort.by(direction, "ratingNum");
+        Sort sort = Sort.by(direction, "ratingNum", "regdate");
         Pageable pageable = PageRequest.of(pageNum,pageSize,sort);
 
         Flux<RatingResp> result = ratingRepository.findByMountainId(mountainId, pageable)
@@ -87,5 +93,30 @@ public class RatingServiceImpl implements RatingService {
             ratingRepository.subRatingNum(ratingId);
         }
         return add == 1 ? ratingRepository.addRatingNum(ratingId) :  ratingRepository.subRatingNum(ratingId);
+    }
+
+    @Override
+    public Flux<RatingMountainResp> getMyPageReviewMountain(Long userId) {
+        Flux<RatingEntity> flux = ratingRepository.findByUserId(userId);
+
+        return flux
+                .flatMap(x-> mountainRepository.findById(x.getMountainId())
+                        .flatMap(y->
+                                Mono.zip(Mono.just(y), Mono.just(x)))
+                        .map(t -> {
+                            //t1 -> mountain
+                            //t2 -> rating
+                            return RatingMountainResp.builder()
+                                    .ratingId(t.getT2().getId())
+                                    .star(t.getT2().getStar())
+                                    .comment(t.getT2().getComment())
+                                    .title(t.getT2().getTitle())
+                                    .thumbImg(t.getT2().getThumbImg())
+                                    .nickname(t.getT2().getNickname())
+                                    .recommendNum(t.getT2().getRatingNum())
+                                    .mountainId(t.getT1().getId())
+                                    .name(t.getT1().getName())
+                                    .build();
+                        })).log();
     }
 }

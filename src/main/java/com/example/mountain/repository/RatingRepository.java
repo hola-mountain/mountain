@@ -28,4 +28,6 @@ public interface RatingRepository extends ReactiveSortingRepository<RatingEntity
     @Modifying
     @Query("UPDATE RATINGS SET rating_num = rating_num -1 where id = :#{[0]}")
     Mono<Integer> subRatingNum(Long ratingId);
+
+    Flux<RatingEntity> findByUserId(Long userId);
 }

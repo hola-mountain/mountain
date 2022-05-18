@@ -1,6 +1,8 @@
 package com.example.mountain.service;
 
 import com.example.mountain.dto.req.RatingRequest;
+import com.example.mountain.dto.resp.FavoriteMountainResp;
+import com.example.mountain.dto.resp.RatingMountainResp;
 import com.example.mountain.dto.resp.RatingResp;
 import com.example.mountain.entity.RatingEntity;
 import reactor.core.publisher.Flux;
@@ -18,4 +20,5 @@ public interface RatingService {
 
     Mono<Integer> toggleRecommend(Long ratingId, Long userId, Integer add);
 
+    Flux<RatingMountainResp> getMyPageReviewMountain(Long userId);
 }

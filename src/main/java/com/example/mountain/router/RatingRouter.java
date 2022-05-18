@@ -95,6 +95,7 @@ public class RatingRouter {
                         .PUT("/mountain/{mountainId}/review/{ratingId}", ratingHandler::modifyReview)
                         .DELETE("/mountain/{mountainId}/review/{ratingId}", ratingHandler::removeReview)
                         .PATCH("/mountain/{mountainId}/review/{ratingId}/recommend", ratingHandler::recommendReview)
+                        .GET("/mountain/review/me", ratingHandler::getMyPageReview)
                         .build();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.mountain.handler;
 
+import com.example.mountain.dto.resp.FavoriteMountainResp;
+import com.example.mountain.dto.resp.RatingMountainResp;
 import com.example.mountain.s3.S3ClientConfigurarionProperties;
 import com.example.mountain.s3.S3Config;
 import com.example.mountain.dto.req.RatingRecommendReq;
@@ -139,6 +141,17 @@ public class RatingHandler {
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ratingMono, RatingResp.class)
+                .onErrorResume(error -> ServerResponse.badRequest().build());
+    }
+
+    public Mono<ServerResponse> getMyPageReview(ServerRequest serverRequest){
+
+        Long userId= Long.parseLong(serverRequest.queryParam("userId").get());
+
+        Flux<RatingMountainResp> result = ratingService.getMyPageReviewMountain(userId);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result, RatingMountainResp.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 
