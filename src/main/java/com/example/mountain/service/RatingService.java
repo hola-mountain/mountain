@@ -1,6 +1,7 @@
 package com.example.mountain.service;
 
 import com.example.mountain.dto.req.RatingRequest;
+import com.example.mountain.dto.resp.DeleteRatingResp;
 import com.example.mountain.dto.resp.FavoriteMountainResp;
 import com.example.mountain.dto.resp.RatingMountainResp;
 import com.example.mountain.dto.resp.RatingResp;

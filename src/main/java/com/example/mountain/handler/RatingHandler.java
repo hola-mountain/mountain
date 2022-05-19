@@ -1,5 +1,6 @@
 package com.example.mountain.handler;
 
+import com.example.mountain.dto.resp.DeleteRatingResp;
 import com.example.mountain.dto.resp.FavoriteMountainResp;
 import com.example.mountain.dto.resp.RatingMountainResp;
 import com.example.mountain.s3.S3ClientConfigurarionProperties;
@@ -17,6 +18,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Slf4j
 @Component
@@ -127,13 +129,13 @@ public class RatingHandler {
         Long ratingId = Long.parseLong(serverRequest.pathVariable("ratingId"));
         Mono<RatingRequest> req = serverRequest.bodyToMono(RatingRequest.class);
         Mono<Void> result = Mono.zip(req, Mono.just(ratingId)).flatMap(
-                x-> ratingService.deleteRating(x.getT2().longValue(), x.getT1().getUserId())
+                x-> ratingService.deleteRating(x.getT2().longValue(), x.getT1().getUserId()).log()
         );
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(ratingId, String.class)
-                .onErrorResume(error -> ServerResponse.badRequest().build());
+                .body(result, DeleteRatingResp.class)
+                .onErrorResume(error -> ServerResponse.badRequest().build()).log();
     }
 
     public Mono<ServerResponse> recommendReview(ServerRequest serverRequest){
