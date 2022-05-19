@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 @Repository
@@ -18,5 +19,11 @@ public interface MountainRepository extends ReactiveSortingRepository<MountainEn
     Flux<MountainEntity> findByDistrictIdAndNameLike(int district, String name, Pageable pageable);
 
     Flux<MountainEntity> findByNameLike(String name, @NonNull Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM MOUNTAINS  WHERE district_id =:district AND name LIKE :name")
+    Mono<Long> findSize(int district, String name);
+
+    @Query(value = "SELECT COUNT(*) FROM MOUNTAINS  WHERE name LIKE :name")
+    Mono<Long> findSize(String name);
 }
 
