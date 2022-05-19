@@ -12,4 +12,6 @@ public interface FavoriteService {
     Mono<Void> removeFavorite(Long userId, Long favoriteId);
 
     Flux<FavoriteMountainResp> getMyPageFavoriteMountain(Long userId);
+
+    Mono<FavoriteMountainResp> getMountainDetailFavorite(Long mountainId, Long userId);
 }

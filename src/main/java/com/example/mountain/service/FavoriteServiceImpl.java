@@ -51,4 +51,10 @@ public class FavoriteServiceImpl implements FavoriteService{
                 return new FavoriteMountainResp(t.getT1().getId(), t.getT1().getName(), t.getT1().getShortDescription(), i, x.getId());
                 })).log();
     }
+
+    @Override
+    public Mono<FavoriteMountainResp> getMountainDetailFavorite(Long mountainId, Long userId) {
+        return favoriteRepository.findByMountainIdAndUserId(mountainId, userId)
+                .map(x-> new FavoriteMountainResp(1)).defaultIfEmpty(new FavoriteMountainResp(0));
+    }
 }
