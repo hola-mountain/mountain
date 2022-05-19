@@ -44,7 +44,11 @@ public class FavoriteServiceImpl implements FavoriteService{
                         .map(t -> {
                 ArrayList<String> i = new ArrayList();
                 t.getT2().forEach(img-> i.add(img.getImage()));
-                return new FavoriteMountainResp(t.getT1().getId(), t.getT1().getName(), t.getT1().getShortDescription(), i, x.getId(), x.getRegdate().toLocalDate());
+                            // t1 : mountain
+                            // t2 : mountain_thum
+                            // t3 : favorite
+                // mountainId,  name,  shortDescription, > image,  favoriteId, LocalDate regdate
+                return new FavoriteMountainResp(t.getT1().getId(), t.getT1().getName(), t.getT1().getShortDescription(), i, x.getId());
                 })).log();
     }
 }

@@ -12,7 +12,6 @@ public class RatingMountainResp {
     private Long ratingId;
     private Integer star;
     private String comment;
-    private LocalDate regdate;
     private String title;
     private String thumbImg;
     private String nickname;

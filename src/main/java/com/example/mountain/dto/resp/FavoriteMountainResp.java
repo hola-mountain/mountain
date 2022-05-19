@@ -16,14 +16,12 @@ public class FavoriteMountainResp {
 
     private ArrayList<String> image = new ArrayList<>();
     private Long favoriteId;
-    private LocalDate regate;
 
-    public FavoriteMountainResp(Long mountainId, String name, String shortDescription, ArrayList<String> image, Long favoriteId, LocalDate regdate) {
+    public FavoriteMountainResp(Long mountainId, String name, String shortDescription, ArrayList<String> image, Long favoriteId) {
         this.mountainId = mountainId;
         this.name = name;
         this.shortDescription = shortDescription;
         this.image = image;
         this.favoriteId = favoriteId;
-        this.regate = regdate;
     }
 }
