@@ -2,6 +2,8 @@ package com.example.mountain.entity;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Table(value="FAVORITES")
 @Data
+@NoArgsConstructor
 public class FavoriteEntity {
 
     @Id

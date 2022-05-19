@@ -54,4 +54,14 @@ public class FavoriteHandler {
                 .body(result, FavoriteMountainResp.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
+
+    public Mono<ServerResponse> getMountainDetailFavorite(ServerRequest serverRequest){
+        Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
+        Long userId= Long.parseLong(serverRequest.queryParam("userId").get());
+        Mono<FavoriteMountainResp> result = favoriteService.getMountainDetailFavorite(mountainId, userId);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(result, FavoriteMountainResp.class)
+                .onErrorResume(error -> ServerResponse.badRequest().build());
+    }
 }
