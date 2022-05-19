@@ -2,12 +2,14 @@ package com.example.mountain.service;
 
 import com.example.mountain.dto.kakfa.ReviewCount;
 import com.example.mountain.dto.req.RatingRequest;
+import com.example.mountain.dto.resp.DeleteRatingResp;
 import com.example.mountain.dto.resp.FavoriteMountainResp;
 import com.example.mountain.dto.resp.RatingMountainResp;
 import com.example.mountain.dto.resp.RatingResp;
 import com.example.mountain.entity.FavoriteEntity;
 import com.example.mountain.entity.RatingEntity;
 import com.example.mountain.entity.RatingRecEntity;
+import com.example.mountain.exception.NoDataFounedException;
 import com.example.mountain.repository.MountainRepository;
 import com.example.mountain.repository.RatingRecRepository;
 import com.example.mountain.repository.RatingRepository;
@@ -37,7 +39,7 @@ public class RatingServiceImpl implements RatingService {
     private final MountainRepository mountainRepository;
     private final KafkaTemplate<String, ReviewCount> ratingKafkaTemplate;
 
-    private static final String TOPIC = "test";
+    private static final String TOPIC = "mountainBadge";
 
     public void sendMessage(ReviewCount message) {
         log.info(String.format("#### -> Producing message -> %s", message.toString()));
@@ -68,13 +70,13 @@ public class RatingServiceImpl implements RatingService {
     public Mono<RatingEntity> createRating(RatingEntity ratingEntity) {
 
         Mono<RatingEntity> mono = ratingRepository.save(ratingEntity);
-        mono.doOnNext(x->
-           sendMessage(ReviewCount.builder()
-                   .userId(x.getUserId())
-                   .ratingId(x.getId())
-                   .add(1)
-                   .build()));
-        return mono;
+
+        return mono.doOnNext(x->
+                sendMessage(ReviewCount.builder()
+                        .userId(x.getUserId())
+                        .ratingId(x.getId())
+                        .add(1)
+                        .build()));
     }
 
     @Override
@@ -99,12 +101,25 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public Mono<Void> deleteRating(Long id, Long userId) {
-        return ratingRepository.deleteById(id)
-                .doOnNext(x-> sendMessage(ReviewCount.builder()
-                                                    .userId(userId)
-                                                    .ratingId(id)
-                                                    .add(-1)
-                                                    .build()));
+
+        return ratingRepository.findById(id).hasElement()
+                .flatMap(deleteRating ->  {
+                    if (!deleteRating)
+                        return Mono.error(new NoDataFounedException("해당 리뷰를 찾을수 없습니다."));
+
+                    return deleteMountainReview(id, userId);
+                }).log();
+    }
+
+    private Mono<Void> deleteMountainReview(Long ratingId, Long userId) {
+        return ratingRepository.deleteById(ratingId)
+                .doOnNext(x-> {
+                    sendMessage(ReviewCount.builder()
+                                    .userId(userId)
+                                    .ratingId(ratingId)
+                                    .add(-1)
+                                    .build());
+                        });
     }
 
     @Transactional
