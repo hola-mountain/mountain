@@ -3,6 +3,7 @@ package com.example.mountain.service;
 import com.example.mountain.dto.resp.MountainPageResp;
 import com.example.mountain.dto.resp.MountainResp;
 import com.example.mountain.entity.MountainThumbEntity;
+import com.example.mountain.repository.FavoriteRepository;
 import com.example.mountain.repository.MountainRepository;
 import com.example.mountain.repository.MountainThumbRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class MountainServiceImpl implements MountainService{
 
     private final MountainRepository mountainRepository;
     private final MountainThumbRepository mountainThumbRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Override
     public Mono<MountainPageResp> getMountainListPage(int district, int pageNum, int pageSize, String sortBy, boolean isAsc, String search) {
@@ -62,17 +64,20 @@ public class MountainServiceImpl implements MountainService{
     }
 
     @Override
-    public Mono<MountainResp> getMountainDetail(Long mountainId) {
+    public Mono<MountainResp> getMountainDetail(Long mountainId, Long userId) {
         ArrayList<String> img = new ArrayList<String>();
         return Mono.zip(
                 mountainRepository.findById(mountainId),
                 mountainThumbRepository.findByMountainId(mountainId).collectList(),
-                (x,y) -> {
-                    for(MountainThumbEntity m : y){
+                favoriteRepository.findByMountainIdAndUserId(mountainId,userId)
+                ).map(t-> {
+                    for(MountainThumbEntity m : t.getT2()){
                         img.add(m.getImage());
                     }
-                    return new MountainResp(x.getId(),x.getName(),x.getLatitude(),x.getLongitude(),x.getHeight(),x.getHikingLevel(),x.getViewLevel(),x.getAttractLevel(),x.getDescription(),img);
-                }
-        ).log();
+
+                    int fav = t.getT3() == null ? 0 : 1;
+                    return new MountainResp(t.getT1().getId(),t.getT1().getName(),t.getT1().getLatitude(),t.getT1().getLongitude(),t.getT1().getHeight(),t.getT1().getHikingLevel(),
+                            t.getT1().getViewLevel(),t.getT1().getAttractLevel(),t.getT1().getDescription(),img, fav);
+                });
     }
 }
