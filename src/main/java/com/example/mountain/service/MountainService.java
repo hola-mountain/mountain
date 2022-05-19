@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface MountainService {
     Mono<MountainPageResp> getMountainListPage(int district, int pageNum, int pageSize, String sortBy, boolean isAsc, String search);
-    Mono<MountainResp> getMountainDetail(Long mountainId, Long userId);
+    Mono<MountainResp> getMountainDetail(Long mountainId);
 }

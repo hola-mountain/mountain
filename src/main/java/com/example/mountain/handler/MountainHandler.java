@@ -44,7 +44,7 @@ public class MountainHandler {
 
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
         Long userId = Long.parseLong(serverRequest.queryParam("userId").get());
-        Mono<MountainResp> mountainRespMono = mountainService.getMountainDetail(mountainId, userId);
+        Mono<MountainResp> mountainRespMono = mountainService.getMountainDetail(mountainId);
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
