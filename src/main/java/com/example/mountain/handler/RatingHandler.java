@@ -128,6 +128,7 @@ public class RatingHandler {
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
         Long ratingId = Long.parseLong(serverRequest.pathVariable("ratingId"));
         Long userId= Long.parseLong(serverRequest.queryParam("userId").get());
+
         Mono<Void> result = ratingService.deleteRating(ratingId, userId);
 
         return ServerResponse.ok()
