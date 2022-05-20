@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(value="FAVORITES")
 @Data
 @NoArgsConstructor
+@Setter
 public class FavoriteEntity {
 
     @Id
@@ -30,6 +31,12 @@ public class FavoriteEntity {
     private LocalDateTime regdate;
 
     public FavoriteEntity(Long mountainId, Long userId) {
+        this.mountainId = mountainId;
+        this.userId = userId;
+    }
+
+    public FavoriteEntity(Long id, Long mountainId, Long userId) {
+        this.id = id;
         this.mountainId = mountainId;
         this.userId = userId;
     }

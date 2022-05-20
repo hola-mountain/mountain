@@ -34,14 +34,20 @@ public class FavoriteHandler {
 
     public Mono<ServerResponse> deleteFavorite(ServerRequest serverRequest){
 
-        Long favoriteId = Long.parseLong(serverRequest.pathVariable("favoriteId"));
+        Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
+        Long userId = Long.parseLong(serverRequest.pathVariable("userId"));
 
-        Mono<Void> favoriteEntityMono  = serverRequest.bodyToMono(FavoriteReq.class)
-                .flatMap(r-> favoriteService.removeFavorite(r.getUserId(), favoriteId));
+        Flux<Void> result = favoriteService.removeFavorite(userId, mountainId);
+
+//        Mono<Void> result = serverRequest.bodyToMono(FavoriteReq.class)
+//                .flatMap(r-> {
+//                    System.out.println(r.getUserId());
+//                    return favoriteService.removeFavorite(r.getUserId(), mountainId);
+//                });
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(favoriteEntityMono, FavoriteEntity.class)
+                .body(result, String.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 

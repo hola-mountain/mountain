@@ -53,7 +53,7 @@ public class FavoriteRouter {
         return
                 RouterFunctions.route()
                         .POST("/mountain/{mountainId}/favorite", favoriteHandler::addFavorite)
-                        .DELETE("/mountain/{mountainId}/favorite/{favoriteId}", favoriteHandler::deleteFavorite)
+                        .DELETE("/mountain/{mountainId}/favorite/{userId}", favoriteHandler::deleteFavorite)
                         .GET("/mountain/favorite/me", favoriteHandler::getMyPageFavorite)
                         .GET("/mountain/{mountainId}/favorite", favoriteHandler::getMountainDetailFavorite)
                         .build();

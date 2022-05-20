@@ -1,8 +1,11 @@
 package com.example.mountain.dto.req;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class FavoriteReq {
     private Long userId;
 }

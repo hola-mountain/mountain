@@ -6,12 +6,16 @@ import com.example.mountain.repository.FavoriteRepository;
 import com.example.mountain.repository.MountainRepository;
 import com.example.mountain.repository.MountainThumbRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FavoriteServiceImpl implements FavoriteService{
@@ -26,10 +30,11 @@ public class FavoriteServiceImpl implements FavoriteService{
     }
 
     @Override
-    public Mono<Void> removeFavorite(Long userId, Long favoriteId) {
-        return favoriteRepository.findById(favoriteId)
-                .filter(f-> userId == f.getUserId())
-                .flatMap(f-> favoriteRepository.deleteById(favoriteId));
+    public Flux<Void> removeFavorite(Long userId, Long mountainId) {
+        //System.out.println(userId + ": " +  mountainId);
+        return favoriteRepository.findByUserIdAndMountainId(userId, mountainId)
+                .flatMap(r-> favoriteRepository.deleteById(r.getId())
+                        .doOnNext(res -> log.info("Item  has been removed")));
     }
 
     @Override
