@@ -20,6 +20,7 @@ public class FavoriteHandler {
 
     private final FavoriteService favoriteService;
 
+    // 즐겨찾기 추가
     public Mono<ServerResponse> addFavorite(ServerRequest serverRequest){
 
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
@@ -32,6 +33,7 @@ public class FavoriteHandler {
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 
+    // 즐겨찾기 해제
     public Mono<ServerResponse> deleteFavorite(ServerRequest serverRequest){
 
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
@@ -39,18 +41,13 @@ public class FavoriteHandler {
 
         Flux<Void> result = favoriteService.removeFavorite(userId, mountainId);
 
-//        Mono<Void> result = serverRequest.bodyToMono(FavoriteReq.class)
-//                .flatMap(r-> {
-//                    System.out.println(r.getUserId());
-//                    return favoriteService.removeFavorite(r.getUserId(), mountainId);
-//                });
-
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(result, String.class)
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 
+    // 마이페이지 즐겨찾기 불러오기
     public Mono<ServerResponse> getMyPageFavorite(ServerRequest serverRequest){
         Long userId= Long.parseLong(serverRequest.queryParam("userId").get());
 
@@ -61,6 +58,7 @@ public class FavoriteHandler {
                 .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 
+    // 산 디테일 즐겨찾기 불러오기
     public Mono<ServerResponse> getMountainDetailFavorite(ServerRequest serverRequest){
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
         Long userId= Long.parseLong(serverRequest.queryParam("userId").get());
