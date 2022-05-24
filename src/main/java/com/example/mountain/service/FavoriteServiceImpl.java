@@ -37,9 +37,7 @@ public class FavoriteServiceImpl implements FavoriteService{
     @Override
     public Flux<FavoriteMountainResp> getMyPageFavoriteMountain(Long userId) {
 
-        Flux<FavoriteEntity> flux = favoriteRepository.findByUserId(userId);
-
-        return flux
+        return favoriteRepository.findByUserId(userId)
                 .flatMap(x-> mountainRepository.findById(x.getMountainId())
                 .flatMap(y->
                     Mono.zip(Mono.just(y), mountainThumbRepository.findByMountainId(y.getId()).collectList(), Mono.just(x)))
@@ -48,7 +46,6 @@ public class FavoriteServiceImpl implements FavoriteService{
                 t.getT2().forEach(img-> i.add(img.getImage()));
                             // t1 : mountain
                             // t2 : mountain_thum
-                            // t3 : favorite
                 // mountainId,  name,  shortDescription, > image,  favoriteId, LocalDate regdate
                 return new FavoriteMountainResp(t.getT1().getId(), t.getT1().getName(), t.getT1().getShortDescription(), i, x.getId());
                 })).log();
@@ -57,6 +54,8 @@ public class FavoriteServiceImpl implements FavoriteService{
     @Override
     public Mono<FavoriteMountainResp> getMountainDetailFavorite(Long mountainId, Long userId) {
         return favoriteRepository.findByMountainIdAndUserId(mountainId, userId)
+                // 1 : 즐겨찾음
+                // 0 : 즐겨찾지 않음
                 .map(x-> new FavoriteMountainResp(1)).defaultIfEmpty(new FavoriteMountainResp(0));
     }
 }
