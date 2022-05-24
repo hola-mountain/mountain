@@ -30,11 +30,8 @@ public class FavoriteServiceImpl implements FavoriteService{
     }
 
     @Override
-    public Flux<Void> removeFavorite(Long userId, Long mountainId) {
-        //System.out.println(userId + ": " +  mountainId);
-        return favoriteRepository.findByUserIdAndMountainId(userId, mountainId)
-                .flatMap(r-> favoriteRepository.deleteById(r.getId())
-                        .doOnNext(res -> log.info("Item  has been removed")));
+    public Mono<Void> removeFavorite(Long userId, Long mountainId) {
+        return favoriteRepository.deleteByUserIdAndMountainId(userId, mountainId);
     }
 
     @Override

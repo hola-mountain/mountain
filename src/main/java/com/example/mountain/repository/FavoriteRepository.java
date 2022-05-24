@@ -23,8 +23,8 @@ public interface FavoriteRepository extends ReactiveSortingRepository<FavoriteEn
     @Query("SELECT id, mountain_id, user_id FROM FAVORITES WHERE mountain_id =:mountainId and user_id =:userId")
     Mono<FavoriteEntity> findByMountainIdAndUserId(Long mountainId, Long userId);
 
-    @Query("DELETE FROM FAVORITES WHERE id =:id")
-    Mono<Void> deleteById(Long id);
+    @Query("DELETE FROM FAVORITES WHERE user_id =:userId and mountain_id =:mountainId")
+    Mono<Void> deleteByUserIdAndMountainId(Long userId, Long mountainId);
 
     @Query("SELECT id, mountain_id, user_id FROM FAVORITES WHERE user_id =:userId and mountain_id =:mountainId")
     Flux<FavoriteEntity> findByUserIdAndMountainId(Long userId, Long mountainId);

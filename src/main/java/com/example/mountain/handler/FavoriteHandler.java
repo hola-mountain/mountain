@@ -39,7 +39,7 @@ public class FavoriteHandler {
         Long mountainId = Long.parseLong(serverRequest.pathVariable("mountainId"));
         Long userId = Long.parseLong(serverRequest.pathVariable("userId"));
 
-        Flux<Void> result = favoriteService.removeFavorite(userId, mountainId);
+        Mono<Void> result = favoriteService.removeFavorite(userId, mountainId);
 
         return ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)

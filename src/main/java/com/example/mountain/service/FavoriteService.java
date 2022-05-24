@@ -9,7 +9,7 @@ public interface FavoriteService {
 
     Mono<FavoriteEntity> addFavorite(Long userId, Long mountainId);
 
-    Flux<Void> removeFavorite(Long userId, Long mountainId);
+    Mono<Void> removeFavorite(Long userId, Long mountainId);
 
     Flux<FavoriteMountainResp> getMyPageFavoriteMountain(Long userId);
 
