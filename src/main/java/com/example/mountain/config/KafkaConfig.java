@@ -20,7 +20,7 @@ class KafkaConfig {
 
     private static  final String BOOTSTRAP_SERVER = "13.125.227.251:9092";
 
-    private static final String TOPIC = "mountainBadge";
+    private static final String TOPIC = "mountainbadge";
 
     @Bean
     public Map<String, Object> ratingProducerConfigs() {

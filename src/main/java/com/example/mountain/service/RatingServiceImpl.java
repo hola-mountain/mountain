@@ -39,13 +39,12 @@ public class RatingServiceImpl implements RatingService {
     private final MountainRepository mountainRepository;
     private final KafkaTemplate<String, ReviewCount> ratingKafkaTemplate;
 
-    private static final String TOPIC = "mountainBadge";
+    private static final String TOPIC = "mountainbadge";
 
     public void sendMessage(ReviewCount message) {
         log.info(String.format("#### -> Producing message -> %s", message.toString()));
         this.ratingKafkaTemplate.send(TOPIC ,message);
     }
-
 
     @Override
     public Flux<RatingResp> getRatingListPage(Long mountainId, int pageNum, int pageSize) {
