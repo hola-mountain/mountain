@@ -18,7 +18,7 @@ import java.util.Map;
 class KafkaConfig {
 
 
-    private static  final String BOOTSTRAP_SERVER = "3.36.132.196:9092";
+    private static  final String BOOTSTRAP_SERVER = "13.125.227.251:9092";
 
     private static final String TOPIC = "mountainBadge";
 
