@@ -51,6 +51,8 @@ public class UploadResource {
     //private final Path basePath = Paths.get("/home/ec2-user/upload/");
     private final Path basePath = Paths.get("/home/ec2-user/upload/");
 
+
+
     /**
      *  filePartMono로 받아
      *  /src/main/resources/upload/{fp.filename()} 으로
@@ -103,6 +105,9 @@ public class UploadResource {
                                 .metadata(metadata)
                                 .build(),
                         AsyncRequestBody.fromPublisher(Flux.just(ByteBuffer.wrap(fileContent))));
+        
+        // 업로드된 파일 삭제 
+        fi.delete();
 
         return Mono.fromFuture(future)
                 .map((response) -> {
